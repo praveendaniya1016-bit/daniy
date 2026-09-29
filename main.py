@@ -12,7 +12,8 @@ from fastapi.templating import Jinja2Templates
 import database
 from gemini_utils import generate_recommendations
 from security import SESSION_TTL, decode_token, hash_password, issue_token, verify_password
-
+(BASE_DIR / "static").mkdir(parents=True, exist_ok=True)
+(BASE_DIR / "templates").mkdir(parents=True, exist_ok=True)
 
 BASE_DIR = Path(__file__).resolve().parent
 COOKIE_NAME = "pocketsmart_session"
