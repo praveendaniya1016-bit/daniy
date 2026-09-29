@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block content %}
+<section class="welcome-row">
+  <div><div class="eyebrow"><span class="eyebrow-dot"></span> A LITTLE MORE THOUGHTFUL</div><h1>Make room for<br>what <span>matters.</span></h1><p class="welcome-copy">A good plan starts with a number. Tell us what you have in mind.</p></div>
+  <div class="welcome-stamp"><span class="stamp-mark">✳</span><span>YOUR MONEY,<br>WITH A PLAN.</span><span class="stamp-line"></span></div>
+</section>
+<div class="planner-switcher" role="tablist" aria-label="Choose a planner">
+  <a class="switch-tab active" href="/planner/home"><span class="tab-glyph">⌂</span><span>Home</span><small>Make it yours</small></a>
+  <a class="switch-tab" href="/planner/party"><span class="tab-glyph">✳</span><span>Party</span><small>Bring people together</small></a>
+  <a class="switch-tab" href="/planner/jewelry"><span class="tab-glyph">◇</span><span>Jewelry</span><small>Find your finishing touch</small></a>
+</div>
+<div class="home-grid">
+  <section class="work-panel" id="planner">
+    <div class="panel-heading"><div><span class="step-label">01 <i></i> YOUR PLAN</span><h2>Start with a space.</h2></div><span class="panel-mini-mark">⌂</span></div>
+    <form class="planner-form" data-category="home" data-endpoint="/generate-home">
+      <div class="field-row">
+        <label class="field budget-field"><span>YOUR BUDGET <span class="required-dot">*</span></span><div class="money-input"><span>₹</span><input name="budget" type="number" min="500" max="10000000" step="500" value="25000" required><span class="input-trailing">INR</span></div><small>₹500 – ₹1,00,00,000</small></label>
+        <label class="field"><span>WHICH ROOM?</span><select name="room"><option>Living room</option><option>Bedroom</option><option>Dining room</option><option>Balcony</option><option>Entryway</option><option>Home office</option></select></label>
+      </div>
+      <div class="field-row">
+        <label class="field"><span>YOUR STYLE</span><select name="style"><option>Warm minimal</option><option>Modern Indian</option><option>Scandinavian</option><option>Earthy eclectic</option><option>Contemporary</option><option>Not sure yet</option></select></label>
+        <label class="field"><span>WHAT NEEDS LOVE?</span><select name="priority"><option>Lighting & atmosphere</option><option>Comfort & soft furnishings</option><option>Storage that works</option><option>Art & finishing touches</option><option>A bit of everything</option></select></label>
+      </div>
+      <div class="form-bottom"><span class="form-assurance"><span>✳</span> Thoughtful picks, within your number.</span><button class="button button-dark submit-button" type="submit">Build my plan <span>↗</span></button></div>
+      <div class="form-error" role="alert" hidden></div>
+    </form>
+    <section class="results-panel" aria-live="polite" hidden></section>
+  </section>
+  <aside class="inspiration-panel">
+    <div class="inspiration-image"><img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?auto=format&fit=crop&w=900&q=85" alt="Sunlit living room with layered, relaxed furnishings"><span class="image-caption">ROOM TO FEEL LIKE YOU</span></div>
+    <div class="inspiration-copy"><div class="small-overline">THE POCKETSMART WAY <span>✳</span></div><p>Small choices.<br><em>Better big picture.</em></p><div class="mini-rule"></div><div class="inspiration-foot"><span>01 / 03</span><span>Start with your budget</span></div></div>
+  </aside>
+</div>
+{% if recent %}<section class="recent-strip"><div><span class="step-label">BACK ON YOUR MIND?</span><h2>Recent plans</h2></div><a class="text-link" href="/activity">See all <span>↗</span></a><div class="recent-items">{% for item in recent[:3] %}<a href="/plan/{{ item.id }}" class="recent-card"><span class="recent-category">{{ item.category|upper }}</span><strong>₹{{ '{:,.0f}'.format(item.budget) }}</strong><span>{{ item.created_at[:10] }}</span></a>{% endfor %}</div></section>{% endif %}
+<section class="stories-inline" id="stories"><div><span class="step-label">A FEW GOOD WORDS</span><p>“Finally, planning that starts with what I actually want to spend.”</p></div><span>— Ananya, Bengaluru <a href="/testimonials">More stories ↗</a></span></section>
+{% endblock %}

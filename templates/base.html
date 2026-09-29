@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f7f8f4">
+  <title>{% block title %}PocketSmart{% endblock %} | PocketSmart AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', path='/styles.css') }}">
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <div class="app-frame">
+    <aside class="sidebar">
+      <a class="brand" href="/" aria-label="PocketSmart home">
+        <span class="brand-mark"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M7 8.5h18v15H7z"/><path d="M10 8.5V6.2A2.2 2.2 0 0 1 12.2 4h7.6A2.2 2.2 0 0 1 22 6.2v2.3M7 13h18M12 18h8"/></svg></span>
+        <span>Pocket<span class="brand-light">Smart</span><small>AI BUDGET STUDIO</small></span>
+      </a>
+      <div class="side-label">WORKSPACE</div>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="/" class="nav-link {% if request.url.path == '/' %}active{% endif %}"><span class="nav-icon">⌂</span> Overview</a>
+        <div class="side-label nav-section-label">YOUR PLANNERS</div>
+        <a href="/planner/home" class="nav-link {% if request.url.path == '/planner/home' %}active{% endif %}"><span class="category-dot dot-home"></span> Home refresh</a>
+        <a href="/planner/party" class="nav-link {% if request.url.path == '/planner/party' %}active{% endif %}"><span class="category-dot dot-party"></span> Party plans</a>
+        <a href="/planner/jewelry" class="nav-link {% if request.url.path == '/planner/jewelry' %}active{% endif %}"><span class="category-dot dot-jewelry"></span> Jewelry edit</a>
+        {% if user %}
+        <div class="side-label nav-section-label">YOUR SPACE</div>
+        <a href="/dashboard" class="nav-link {% if request.url.path == '/dashboard' %}active{% endif %}"><span class="nav-icon">◫</span> My dashboard</a>
+        <a href="/activity" class="nav-link {% if request.url.path == '/activity' %}active{% endif %}"><span class="nav-icon">↻</span> Plan history</a>
+        {% endif %}
+      </nav>
+      <a class="side-promo" href="/testimonials">
+        <span class="promo-spark">✳</span>
+        <strong>Good plans,</strong><strong>real life.</strong>
+        <span>See what people are planning <span aria-hidden="true">↗</span></span>
+      </a>
+      <div class="sidebar-bottom">
+        <span class="avatar">{{ user.name[:1]|upper if user else 'P' }}</span>
+        {% if user %}<span class="profile-copy"><strong>{{ user.name }}</strong><small>{{ user.email }}</small></span>
+        <form action="/logout" method="post"><button class="icon-button logout-button" aria-label="Sign out" title="Sign out">↗</button></form>
+        {% else %}<span class="profile-copy"><strong>Planning as a guest</strong><small>Your results stay on this device</small></span><a class="tiny-link" href="/login">Sign in</a>{% endif %}
+      </div>
+    </aside>
+    <div class="app-main">
+      <header class="topbar">
+        <div class="breadcrumb"><span>POCKETSMART</span><span class="crumb-slash">/</span><span>{% block section %}OVERVIEW{% endblock %}</span></div>
+        <div class="topbar-actions">
+          <span class="today-label" id="today-label"></span>
+          {% if user %}<a class="top-avatar" href="/dashboard" title="Your dashboard">{{ user.name[:1]|upper }}</a>{% else %}<a class="button button-quiet button-small" href="/login">Sign in</a><a class="button button-coral button-small" href="/register">Create account <span>↗</span></a>{% endif %}
+        </div>
+      </header>
+      <main class="page-content">
+        {% block content %}{% endblock %}
+      </main>
+      <footer class="page-footer"><span>POCKETSMART AI</span><span>Ideas that fit your real-life budget.</span></footer>
+    </div>
+  </div>
+  <script src="{{ url_for('static', path='/app.js') }}" defer></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

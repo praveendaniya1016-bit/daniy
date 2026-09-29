@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Plan history{% endblock %}
+{% block section %}PLAN HISTORY{% endblock %}
+{% block content %}
+<section class="dashboard-head history-head"><div><div class="eyebrow"><span class="eyebrow-dot"></span> YOUR IDEAS, KEPT CLOSE</div><h1>Room to <span>look back.</span></h1><p>Pick up an old idea or see how your thinking has changed.</p></div><a href="/planner/home" class="button button-dark">New plan <span>↗</span></a></section>
+<section class="dashboard-history history-full"><div class="section-title-row"><div><span class="step-label">{{ history|length }} SAVED PLANS</span><h2>Your history</h2></div></div>{% if history %}<div class="history-table">{% for item in history %}<a href="/plan/{{ item.id }}" class="history-row"><span class="history-category category-{{ item.category }}">{{ item.category }}</span><span class="history-description">{{ item.request.get('room', item.request.get('occasion', item.request.get('outfit', 'A fresh idea'))) }}</span><strong>₹{{ '{:,.0f}'.format(item.budget) }}</strong><span class="history-date">{{ item.created_at[:10] }}</span><span class="history-arrow">↗</span></a>{% endfor %}</div>{% else %}<div class="empty-state"><span class="empty-spark">✳</span><div><strong>Nothing saved just yet.</strong><p>Make a plan while you're signed in and it will find a home here.</p></div><a class="button button-dark button-small" href="/planner/home">Build a plan ↗</a></div>{% endif %}</section>
+{% endblock %}
