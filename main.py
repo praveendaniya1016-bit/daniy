@@ -13,10 +13,8 @@ import database
 from gemini_utils import generate_recommendations
 from security import SESSION_TTL, decode_token, hash_password, issue_token, verify_password
 
-BASE_DIR = Path(__file__).resolve().parent
-(BASE_DIR / "static").mkdir(parents=True, exist_ok=True)
-(BASE_DIR / "templates").mkdir(parents=True, exist_ok=True)
 
+BASE_DIR = Path(__file__).resolve().parent
 COOKIE_NAME = "pocketsmart_session"
 MAX_IMAGE_BYTES = 5 * 1024 * 1024
 CATEGORIES = {"home": "Home", "party": "Party", "jewelry": "Jewelry"}
@@ -95,14 +93,14 @@ def planner_result(category, payload, user, image=None, image_mime=None):
 def home(request: Request):
     user = current_user(request)
     recent = database.get_history(user["id"], 4) if user else []
-    return templates.TemplateResponse(request,"index.html", page_context(request, user, recent=recent))
+    return templates.TemplateResponse("index.html", page_context(request, user, recent=recent))
 
 
 @app.get("/planner/{category}", response_class=HTMLResponse)
 def planner_page(category: str, request: Request):
     if category not in CATEGORIES:
         raise HTTPException(status_code=404, detail="Planner not found.")
-    return templates.TemplateResponse(request,"planner.html", page_context(request, current_user(request), category=category))
+    return templates.TemplateResponse("planner.html", page_context(request, current_user(request), category=category))
 
 
 @app.get("/register", response_class=HTMLResponse)
