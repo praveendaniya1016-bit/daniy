@@ -2,13 +2,12 @@ from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import re
-import database
-from security import hash_password, verify_password, create_access_token
+import os
+os.makedirs("static",exist_ok=true)
+os.makedirs("templates",exist_ok=true)
 # from gemini_utils import get_ai_response
-
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="static"),name="static")
 templates = Jinja2Templates(directory="templates")
 
 CATEGORIES = ["study", "fitness", "finance", "general"]
