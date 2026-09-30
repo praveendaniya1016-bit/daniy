@@ -2,7 +2,7 @@ from fastapi import FastAPI, Request, Form, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-import os
+import os 
 os.makedirs("static",exist_ok=true)
 os.makedirs("templates",exist_ok=true)
 # from gemini_utils import get_ai_response
