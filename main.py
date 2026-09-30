@@ -10,7 +10,7 @@ app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"),name="static")
 templates = Jinja2Templates(directory="templates")
 
-CATEGORIES = ["study", "fitness", "finance", "general"]
+CATEGORIES = ["home","jewelry","party"]
 
 def clean_text(text: str, field: str, max_len: int):
     text = text.strip()
