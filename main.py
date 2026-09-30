@@ -5,8 +5,6 @@ from fastapi.middleware.cors import CORSMiddleware
 app = FastAPI()
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
 
-users = {}
-
 @app.get("/", response_class=HTMLResponse)
 async def home():
     return HTMLResponse('<html><head><meta http-equiv="refresh" content="0; url=/login"></head></html>')
@@ -17,12 +15,12 @@ async def login_page():
     <html><body style="font-family:sans-serif; padding:40px; background:#f0f0ff">
     <h2>PocketSmart AI - Login Da! 🚀</h2>
     <form method="post" action="/login" style="display:flex; flex-direction:column; gap:10px; max-width:300px">
-    <input name="email" placeholder="demo@gmail.com" value="demo@gmail.com" style="padding:10px">
-    <input name="password" type="password" placeholder="123456" value="123456" style="padding:10px">
+    <input name="email" placeholder="demo@gmail.com" value="demo@gmail.com" style="padding:10px; border-radius:8px; border:1px solid #ccc">
+    <input name="password" type="password" placeholder="123456" value="123456" style="padding:10px; border-radius:8px; border:1px solid #ccc">
     <button type="submit" style="padding:12px; background:#6c5ce7; color:white; border:none; border-radius:8px; font-weight:bold">Login Da!</button>
     </form>
     <br><a href="/register">New user? Register Da</a>
-    <br><br><a href="/dashboard" style="color:green; font-weight:bold">Direct Dashboard ku Poo Da (Skip Login)</a>
+    <br><br><a href="/dashboard" style="color:green; font-weight:bold; font-size:18px">➡️ Direct Dashboard ku Poo Da (Skip Login)</a>
     </body></html>
     """)
 
@@ -30,7 +28,7 @@ async def login_page():
 async def register_page():
     return HTMLResponse("""
     <html><body style="font-family:sans-serif; padding:40px; background:#f0f0ff">
-    <h2>PocketSmart AI - Register Da! 🎉</h2>
+    <h2>Register Da! 🎉</h2>
     <form method="post" action="/register" style="display:flex; flex-direction:column; gap:10px; max-width:300px">
     <input name="name" placeholder="Name" required style="padding:10px">
     <input name="email" placeholder="Email" required style="padding:10px">
@@ -43,7 +41,7 @@ async def register_page():
 @app.post("/login")
 @app.post("/register")
 async def auth_post(request: Request):
-    return HTMLResponse('<html><head><meta http-equiv="refresh" content="0; url=/dashboard"></head><body>Success Da!</body></html>')
+    return HTMLResponse('<html><head><meta http-equiv="refresh" content="0; url=/dashboard"></head><body>Success!</body></html>')
 
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard():
@@ -91,11 +89,6 @@ async def planner_page(category: str):
     </script>
     </body></html>
     """)
-
-@app.post("/generate")
-@app.post("/api/generate")
-async def generate_api(request: Request):
-    return JSONResponse({"ideas": [{"title": "Demo", "price": "₹100"}]})
 
 @app.get("/logout")
 async def logout():
