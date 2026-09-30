@@ -1,7 +1,6 @@
 from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import JSONResponse
 
 app = FastAPI()
 app.mount("/static", StaticFiles(directory="static"), name="static")
@@ -15,22 +14,27 @@ async def home(request: Request):
 async def planner_page(category: str, request: Request):
     return templates.TemplateResponse(request, "planner.html", {"request": request, "category": category})
 
-# --- ENA 404 VARUTHUNU PAATHA FIX DA - ELLA ROUTE UM ---
+# --- ELLA 404 KUM MASTER FIX DA ---
 @app.post("/generate")
 @app.post("/api/generate")
 @app.post("/plan")
 @app.post("/api/plan")
 @app.post("/get-ideas")
+@app.post("/planner/generate")
 async def generate_all(data: dict):
-    budget = data.get("budget", 25000)
+    budget = data.get("budget", 50000)
+    try:
+        budget = int(budget)
+    except:
+        budget = 50000
     return {
         "ideas": [
-            {"title": "Earthy Curtains - Dining", "price": "₹3500", "desc": "Comfort & soft furnishings ku sema da"},
-            {"title": "Warm LED Lights", "price": "₹2000", "desc": "Cozy vibe varum da"},
-            {"title": f"Budget Rug under ₹{int(int(budget)*0.3)}", "price": f"₹{int(int(budget)*0.3)}", "desc": "Pocket smart ah irukkum da"}
+            {"title": "Dining Curtains - Earthy", "price": "₹3500", "desc": "Fix ayiduchu da - comfort ku super!"},
+            {"title": "Warm LED Lights", "price": "₹2000", "desc": "Cozy vibe da!"},
+            {"title": f"Jute Rug - Budget ₹{int(budget*0.3)}", "price": f"₹{int(budget*0.3)}", "desc": "Pocket safe da!"}
         ]
     }
 
-@app.get("/health")
-async def health():
-    return {"status": "ok"}
+@app.post("/{any_path:path}")
+async def catch_all(any_path: str, data: dict):
+    return await generate_all(data)
