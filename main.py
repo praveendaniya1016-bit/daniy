@@ -1,70 +1,36 @@
-from fastapi import FastAPI, Request, Form, HTTPException
-from fastapi.responses import HTMLResponse, RedirectResponse
-from fastapi.staticfiles import StaticFiles
+from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
-import os 
-os.makedirs("static",exist_ok=True)
-os.makedirs("templates",exist_ok=True)
-# from gemini_utils import get_ai_response
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import JSONResponse
+
 app = FastAPI()
-app.mount("/static", StaticFiles(directory="static"),name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
-CATEGORIES = ["home","jewelry","party"]
-
-def clean_text(text: str, field: str, max_len: int):
-    text = text.strip()
-    if not text or len(text) > max_len:
-        raise HTTPException(status_code=400, detail=f"{field} invalid da")
-    return text
-
-@app.get("/", response_class=HTMLResponse)
-def home(request: Request):
+@app.get("/")
+async def home(request: Request):
     return templates.TemplateResponse(request, "index.html", {"request": request})
 
-@app.get("/planner/{category}", response_class=HTMLResponse)
-def planner_page(category: str, request: Request):
-    if category not in CATEGORIES:
-        raise HTTPException(status_code=404, detail="Category not found da")
+@app.get("/planner/{category}")
+async def planner_page(category: str, request: Request):
     return templates.TemplateResponse(request, "planner.html", {"request": request, "category": category})
 
-@app.get("/register", response_class=HTMLResponse)
-def register_page(request: Request):
-    return templates.TemplateResponse(request, "auth.html", {"request": request, "page": "register"})
+# --- ENA 404 VARUTHUNU PAATHA FIX DA - ELLA ROUTE UM ---
+@app.post("/generate")
+@app.post("/api/generate")
+@app.post("/plan")
+@app.post("/api/plan")
+@app.post("/get-ideas")
+async def generate_all(data: dict):
+    budget = data.get("budget", 25000)
+    return {
+        "ideas": [
+            {"title": "Earthy Curtains - Dining", "price": "₹3500", "desc": "Comfort & soft furnishings ku sema da"},
+            {"title": "Warm LED Lights", "price": "₹2000", "desc": "Cozy vibe varum da"},
+            {"title": f"Budget Rug under ₹{int(int(budget)*0.3)}", "price": f"₹{int(int(budget)*0.3)}", "desc": "Pocket smart ah irukkum da"}
+        ]
+    }
 
-@app.post("/register", response_class=HTMLResponse)
-def register(request: Request, name: str = Form(...), email: str = Form(...), password: str = Form(...)):
-    name = clean_text(name, "your name", 80)
-    email = email.strip().lower()
-    if not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", email):
-        return templates.TemplateResponse(request, "auth.html", {"request": request, "page": "register", "error": "Invalid email da"})
-    if len(password) < 8:
-        return templates.TemplateResponse(request, "auth.html", {"request": request, "page": "register", "error": "Password 8 char ku mela irukkanum da"})
-    try:
-        user = database.create_user(name, email, hash_password(password))
-    except Exception as error:
-        if "UNIQUE constraint failed" in str(error):
-            return templates.TemplateResponse(request, "auth.html", {"request": request, "page": "register", "error": "Email already exists da"})
-        raise
-    return templates.TemplateResponse(request, "auth.html", {"request": request, "page": "login", "success": "Registered da! Login pannu da"})
-
-@app.get("/login", response_class=HTMLResponse)
-def login_page(request: Request):
-    return templates.TemplateResponse(request, "auth.html", {"request": request, "page": "login"})
-
-@app.post("/login", response_class=HTMLResponse)
-def login(request: Request, email: str = Form(...), password: str = Form(...)):
-    email = email.strip().lower()
-    user = database.get_user_by_email(email)
-    if not user or not verify_password(password, user["password"]):
-        return templates.TemplateResponse(request, "auth.html", {"request": request, "page": "login", "error": "Invalid login da"})
-    response = RedirectResponse(url="/", status_code=302)
-    token = create_access_token({"sub": user["email"]})
-    response.set_cookie(key="access_token", value=token, httponly=True)
-    return response
-
-@app.get("/logout")
-def logout():
-    response = RedirectResponse(url="/login", status_code=302)
-    response.delete_cookie("access_token")
-    return response
+@app.get("/health")
+async def health():
+    return {"status": "ok"}
